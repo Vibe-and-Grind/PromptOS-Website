@@ -1,1 +1,765 @@
-hello world
+<!DOCTYPE html>
+<html lang="en" data-theme="high-contrast">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PromptOS — Build Your First AI Assistant in a Day | Nov 1</title>
+  <meta name="description" content="Hands-on workshop in Victoria, BC. Build a real AI assistant in one day. Leave with working quick actions, a custom GPT, and a clear playbook." />
+  <meta name="theme-color" content="#201a3c" />
+
+  <!-- Favicon / App icons (crest only) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3eb258e5daa5151892b1b.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://images.leadconnectorhq.com/image/f_webp/q_80/r_800/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3eb258e5daa5151892b1b.png" />
+
+  <style>
+    /* ========================================================
+       PROMPTOS — DYNAMIC MOTION + HIGH CONTRAST (FULL PAGE)
+       Update: mobile-first header w/ hamburger, logo sizing,
+               promo copy, responsive badge behavior
+       ======================================================== */
+
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Great+Vibes&display=swap');
+
+    :root{
+      --bg:#0b0a12;
+      --panel:#19162f;
+      --panel-2:#221e40;
+      --ink:#ffffff;
+      --ink-soft:#fef9ed;      /* brand cream */
+      --muted:#c9c5ff;
+      --accent:#8f79ff;
+      --peach:#ff99b0;
+      --mint:#87ffd0;
+      --ring:rgba(255,255,255,.22);
+      --radius-xl:22px;
+      --radius-lg:16px;
+      --radius:12px;
+      --maxw:1200px;
+      --mx:clamp(18px,4vw,28px);
+      --shadow:0 14px 40px rgba(0,0,0,.55);
+      --shadow-soft:0 12px 30px rgba(0,0,0,.4);
+      --z-drawer:1000;
+      --z-backdrop:999;
+    }
+
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--ink-soft);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;overflow-x:hidden}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+
+    /* Animated background */
+    .bg{position:fixed;inset:0;z-index:-2;pointer-events:none;background:
+      radial-gradient(64vw 64vw at 15% -10%, rgba(143,121,255,.18), rgba(143,121,255,0) 60%),
+      radial-gradient(60vw 60vw at 90% 10%, rgba(255,153,176,.14), rgba(255,153,176,0) 60%),
+      linear-gradient(#0b0a12, #0e0c1e)}
+    .blob{position:absolute;width:48vw;height:48vw;border-radius:50%;filter:blur(70px);opacity:.22;mix-blend-mode:screen}
+    .blob.one{left:-10vw;top:-8vw;background:#8f79ff;animation:float1 18s ease-in-out infinite}
+    .blob.two{right:-8vw;top:12vh;background:#ff99b0;animation:float2 22s ease-in-out infinite}
+    .blob.three{left:24vw;bottom:-18vw;background:#87ffd0;animation:float3 26s ease-in-out infinite}
+    @keyframes float1{50%{transform:translateY(-12px)}}
+    @keyframes float2{50%{transform:translateY(10px)}}
+    @keyframes float3{50%{transform:translateY(-8px)}}
+
+    .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--mx)}
+    .section{padding:clamp(36px,4.5vw,72px) 0}
+
+    /* PROMO BAR (bold, standout) */
+    .promo-bar{
+      width:100%;
+      background:linear-gradient(90deg,#ff99b0, #8f79ff 55%, #87ffd0);
+      color:#0b0a12;
+      font-weight:700;
+      letter-spacing:.2px;
+      box-shadow:0 6px 18px rgba(0,0,0,.35) inset;
+    }
+    .promo-bar .inner{
+      max-width:var(--maxw);margin:0 auto;padding:10px var(--mx);
+      display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;text-align:center;
+    }
+    .promo-bar .code{
+      background:#0b0a12;color:#fff;padding:4px 8px;border-radius:8px;font-family:ui-monospace, SFMono-Regular, Menlo, monospace;border:1px solid rgba(255,255,255,.2)
+    }
+    .promo-bar a{font-weight:800;text-decoration:underline}
+
+    /* Header (non-sticky, full-bleed, w/ mobile hamburger) */
+    header.site{
+      position:static;width:100%;
+      background:linear-gradient(180deg, rgba(20,18,40,.96), rgba(20,18,40,.86));
+      border-bottom:1px solid rgba(255,255,255,.14)
+    }
+    header .row{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px var(--mx);
+      max-width:var(--maxw);margin:0 auto;
+    }
+    .brand{display:flex;align-items:center;gap:12px;color:#fff}
+    .brand img{height:68px;width:auto}
+    nav.primary{display:flex;align-items:center;gap:4px}
+    nav.primary a{padding:10px 12px;color:#fef9ed}
+
+    /* Hamburger button */
+    .hamburger{display:none;position:relative;width:44px;height:44px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:#2a254d;color:#fff;align-items:center;justify-content:center}
+    .hamburger span,.hamburger::before,.hamburger::after{
+      content:"";display:block;width:22px;height:2px;background:#fff;border-radius:2px;position:absolute;transition:transform .25s ease,opacity .25s ease
+    }
+    .hamburger span{transform:none}
+    .hamburger::before{transform:translateY(-6px)}
+    .hamburger::after{transform:translateY(6px)}
+    .hamburger[aria-expanded="true"] span{opacity:0}
+    .hamburger[aria-expanded="true"]::before{transform:rotate(45deg)}
+    .hamburger[aria-expanded="true"]::after{transform:rotate(-45deg)}
+
+    /* Mobile drawer */
+    .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:var(--z-backdrop)}
+    .menu-backdrop.show{opacity:1;pointer-events:auto}
+    .mobile-drawer{
+      position:fixed;top:0;right:0;bottom:0;width:min(86vw,360px);
+      transform:translateX(100%);transition:transform .28s ease;z-index:var(--z-drawer);
+      background:linear-gradient(180deg, rgba(30,26,60,.98), rgba(22,19,44,.98));
+      border-left:1px solid rgba(255,255,255,.14);
+      display:flex;flex-direction:column;padding:16px 16px 24px 16px;gap:10px;
+    }
+    .mobile-drawer.open{transform:translateX(0)}
+    .mobile-drawer .drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .mobile-drawer .drawer-head img{height:44px}
+    .mobile-drawer a{display:block;padding:14px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:#2a254d;color:#fff;font-size:1.05rem}
+    .mobile-drawer a.btn{border-radius:999px;text-align:center}
+
+    /* Mobile header sizing */
+    @media (max-width:768px){
+      .brand img{height:68px}
+      nav.primary{display:none}              /* hide desktop nav */
+      .hamburger{display:inline-flex}
+    }
+
+    /* --- DESKTOP HEADER FIX --- */
+    @media (min-width:769px){
+      header.site .row{
+        height:80px;
+        padding-top:0;
+        padding-bottom:0;
+        align-items:center!important;
+      }
+      header.site .brand{
+        display:flex;
+        align-items:center;
+        height:100%;
+        align-self:center!important;
+      }
+      header.site .brand img{
+        height:72px!important;
+        width:auto!important;
+      }
+      header.site nav.primary{
+        display:flex!important;
+        align-items:center;
+        align-self:center!important;
+      }
+      header.site .hamburger{display:none!important}
+    }
+    /* --- END HEADER FIX --- */
+
+    /* Type */
+    h1,h2,h3{color:var(--ink);margin:0 0 10px}
+    h1{font-size:clamp(34px,4.68vw,59px);line-height:1.04}
+    h2{font-size:clamp(28px,3.2vw,42px)}
+    h3{font-size:clamp(20px,2vw,24px)}
+    p{margin:8px 0 0;color:var(--ink-soft)}
+    .lead{font-size:clamp(18px,1.6vw,20px)}
+
+    .hero-title{display:grid;gap:0}
+    .hero-title .line{display:inline-flex;align-items:flex-end;line-height:1.04;overflow:visible}
+    .hero-title .line-terminal{
+      font-family:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-weight:600;color:var(--mint);
+      letter-spacing:-0.01em;word-spacing:-0.08em;position:relative;
+      font-size:0.9em;
+      text-shadow:0 0 5px rgba(135,255,208,.6);
+    }
+    .hero-title .line-terminal .line-text{
+      display:inline-block;white-space:nowrap;overflow:hidden
+    }
+    .hero-title .line-terminal .caret{
+      display:none;width:.72ch;height:1.22em;background:var(--mint);
+      margin-left:.2ch;border-radius:3px;
+      box-shadow:0 0 8px rgba(135,255,208,.65);
+    }
+    .hero-title .line-cursive{
+      font-family:'Great Vibes','Brush Script MT',cursive;
+      color:var(--peach);
+      letter-spacing:.01em;font-size:1.14em;
+      transform:translateY(4px);
+    }
+    .hero-title .line + .line{margin-top:0.2em}
+    .hero-title .line:last-child{transform:translateY(2px)}
+    .hero-title.animate .line-terminal .line-text{
+      width:0ch;
+      animation:typewriter 2.6s steps(var(--type-chars)) forwards;
+      animation-fill-mode:forwards;
+    }
+    .hero-title.animate .line-terminal .caret{
+      display:inline-block;
+      animation:caret-blink .9s steps(2) infinite;
+    }
+    .hero-title.animate .line-cursive{
+      clip-path:inset(-12% 100% -12% 0);
+      animation:cursiveReveal 1.6s cubic-bezier(.58,.01,.32,1) forwards;
+      animation-delay:2.7s;
+    }
+    .hero-title.no-motion .line-terminal .line-text,
+    body.motion-off .hero-title .line-terminal .line-text{
+      width:auto!important;
+      animation:none!important;
+    }
+    .hero-title.no-motion .line-cursive,
+    body.motion-off .hero-title .line-cursive{
+      clip-path:none!important;
+      animation:none!important;
+    }
+    .hero-title.no-motion .caret,
+    body.motion-off .hero-title .caret{display:none!important}
+    @media (prefers-reduced-motion:reduce){
+      .hero-title .line-terminal .line-text,
+      .hero-title .line-cursive{animation:none!important;width:auto!important;clip-path:none!important}
+      .hero-title .caret{display:none!important}
+    }
+    @keyframes typewriter{to{width:calc(var(--type-chars)*1ch)}}
+    @keyframes caret-blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+    @keyframes cursiveReveal{0%{clip-path:inset(-12% 100% -12% 0)}100%{clip-path:inset(-12% 0 -12% 0)}}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 18px;border-radius:999px;border:1px solid var(--ring);background:#3b2f7c;color:#fff;box-shadow:var(--shadow);transition:transform .18s ease,box-shadow .18s ease}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 18px 44px rgba(0,0,0,.55)}
+    .btn.peach{background:#ac3c5d}
+    .btn.ghost{background:#2a254d}
+
+    /* Cards */
+    .card{background:var(--panel);border:1px solid rgba(255,255,255,.14);border-radius:var(--radius-xl);padding:clamp(16px,1.8vw,22px);box-shadow:var(--shadow-soft)}
+    .panel-2{background:var(--panel-2)}
+
+    /* HERO */
+    .hero .wrap{
+      display:grid;
+      grid-template-columns:1.25fr 1fr;
+      gap:clamp(18px,3.5vw,32px);
+      align-items:stretch; /* equal heights */
+    }
+    .eyebrow{display:inline-flex;gap:10px;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:#2a254d;color:#fff;font-size:.92rem}
+    .hero-title + .eyebrow{margin-top:12px}
+    .cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+
+    /* Meta pill under CTA */
+    .meta{margin-top:14px}
+    .meta .pill{
+      display:flex;flex-wrap:wrap;align-items:center;
+      gap:10px; padding:10px 12px; border-radius:999px;
+      background:#2a254d; color:#fff; border:1px solid rgba(255,255,255,.18);
+      box-shadow:0 10px 24px rgba(0,0,0,.35);
+      font-size:0.97rem;
+    }
+    .meta .pill span + span{position:relative;padding-left:14px}
+    .meta .pill span + span:before{
+      content:"•"; position:absolute; left:4px; top:0; color:#bcb6ff; opacity:.85;
+    }
+
+    .hero-art{position:relative;display:grid}
+    .hero-art .photo{height:100%;border-radius:16px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.55)}
+    .hero-art .photo img{width:100%;height:100%;object-fit:cover;object-position:80% center}
+
+    /* Badge — desktop size */
+    .badge-guarantee{
+      position:absolute;
+      top:-50px;
+      right:-42px;
+      width:min(236px,22vw);
+      height:auto;
+      z-index:3;
+      filter:drop-shadow(0 12px 26px rgba(0,0,0,.55));
+      pointer-events:none;
+    }
+
+    /* Grids & responsive */
+    .grid{display:grid;gap:clamp(12px,2vw,20px)}
+    .cols-2{grid-template-columns:repeat(2,1fr)}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+
+    /* Mobile hero tweaks: stack, move/shrink badge, then hide on very small */
+    @media (max-width:980px){
+      .hero .wrap{grid-template-columns:1fr;align-items:start}
+      .hero-art .photo{height:auto}
+      .badge-guarantee{left:12px; right:auto; top:-8px; width:160px}
+      .cols-2,.cols-3{grid-template-columns:1fr}
+      .meta .pill{border-radius:16px}
+    }
+    @media (max-width:600px){
+      .badge-guarantee{left:8px; top:8px; width:120px}
+    }
+    @media (max-width:420px){
+      .badge-guarantee{display:none}
+    }
+
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+    .chip{border:1px solid rgba(255,255,255,.18);background:#2a254d;color:#fff;padding:8px 12px;border-radius:999px;font-size:.92rem}
+    .feature{display:flex;gap:14px;align-items:flex-start}
+    .feature .icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#2a254d}
+    .feature .icon img{width:28px;height:28px}
+
+    /* Agenda table */
+    .agenda{border-collapse:collapse;width:100%;overflow:hidden;border-radius:var(--radius-lg);color:#fff}
+    .agenda th,.agenda td{padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.14)}
+    .agenda tr:hover{background:#2a254d}
+
+    /* Full-bleed CTA bar (non-sticky) */
+    .cta-bar{position:static;width:100%;background:linear-gradient(180deg, rgba(20,18,40,.96), rgba(20,18,40,.86));border-top:1px solid rgba(255,255,255,.14)}
+    .cta-bar .row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px var(--mx);color:#fff;max-width:var(--maxw);margin:0 auto}
+
+    /* Motion helpers */
+    .tilt{will-change:transform;transition:transform .25s ease}
+    [data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    [data-reveal].in{opacity:1;transform:translateY(0)}
+    .motion-off .blob{animation:none!important}
+    .motion-off .tilt{transition:none!important}
+    @media (prefers-reduced-motion:reduce){
+      .blob{animation:none!important}
+      .tilt,[data-reveal]{transition:none!important}
+    }
+
+    /* Map preview */
+    .map-card{position:relative;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-soft);border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02))}
+    .map-card img{width:100%;height:100%;object-fit:cover}
+    .map-card:before{content:"";position:absolute;inset:0;pointer-events:none;background:
+      radial-gradient(400px 200px at 10% 10%, rgba(143,121,255,.18), transparent 60%),
+      radial-gradient(400px 200px at 90% 90%, rgba(255,153,176,.18), transparent 60%)}
+    .map-overlay{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:flex-end;padding:16px;background:linear-gradient(180deg,rgba(0,0,0,0) 40%,rgba(0,0,0,.25) 100%)}
+    .map-link{position:absolute;inset:0;z-index:2}
+    .map-chip{position:relative;z-index:3;display:inline-flex;align-items:center;gap:10px;padding:12px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(20,18,40,.7);color:#fff;box-shadow:var(--shadow)}
+    .map-chip img{width:18px;height:18px}
+
+    footer{padding:48px 0;color:#fef9ed;background:linear-gradient(180deg, rgba(20,18,40,.86), rgba(20,18,40,.96));border-top:1px solid rgba(255,255,255,.14)}
+  </style>
+</head>
+<body>
+  <!-- Dynamic background -->
+  <div class="bg" aria-hidden="true">
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+    <div class="blob three"></div>
+  </div>
+
+  <!-- PROMO BAR -->
+  <div class="promo-bar" role="status" aria-label="Promotion">
+    <div class="inner">
+      <span>Use Promo Code <span class="code">FASTACTION</span> for <strong>$50 off</strong> an individual ticket if you register by <strong>Oct 21</strong>.</span>
+      <a href="https://www.eventbrite.ca/e/promptos-building-your-first-ai-assistant-tickets-1693944687159?aff=oddtdtcreator" target="_blank" rel="noopener">Register now</a>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site">
+    <div class="row">
+      <a class="brand" href="#top" aria-label="PromptOS Home">
+        <img src="https://storage.googleapis.com/msgsndr/tsV5yBlQck5jNO5Et3cu/media/68f43bd9722f7570b851b63b.png" alt="PromptOS full logo" />
+      </a>
+
+      <!-- Desktop nav -->
+      <nav class="primary" aria-label="Primary">
+        <a href="#agenda">Agenda</a>
+        <a href="#outcomes">Outcomes</a>
+        <a href="#pricing">Pricing</a>
+        <a class="btn peach" href="https://www.eventbrite.ca/e/promptos-building-your-first-ai-assistant-tickets-1693944687159?aff=oddtdtcreator" target="_blank" rel="noopener">Register</a>
+      </nav>
+
+      <!-- Mobile hamburger -->
+      <button id="hamburger" class="hamburger" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile drawer + backdrop -->
+  <div id="menuBackdrop" class="menu-backdrop" hidden></div>
+  <aside id="mobileMenu" class="mobile-drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <img src="https://storage.googleapis.com/msgsndr/tsV5yBlQck5jNO5Et3cu/media/68f3efad7b55a72abf8fa4be.png" alt="PromptOS" />
+      <button id="closeMenu" class="hamburger" aria-label="Close menu" aria-expanded="true"><span></span></button>
+    </div>
+    <a class="mobile-link" href="#agenda">Agenda</a>
+    <a class="mobile-link" href="#outcomes">Outcomes</a>
+    <a class="mobile-link" href="#pricing">Pricing</a>
+    <a class="btn peach mobile-link" href="https://www.eventbrite.ca/e/promptos-building-your-first-ai-assistant-tickets-1693944687159?aff=oddtdtcreator" target="_blank" rel="noopener">Register</a>
+  </aside>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="section hero">
+      <div class="wrap">
+        <div class="card" data-reveal>
+          <h1 class="hero-title" data-hero-animate>
+            <span class="line">AI Workshop That's.</span>
+            <span class="line line-terminal" style="--type-chars:15" data-hero-line="techie">
+              <span class="line-text">Not Too Techie.</span>
+              <span class="caret" aria-hidden="true"></span>
+            </span>
+            <span class="line line-cursive" data-hero-line="fluffy">Not Too Fluffy.</span>
+            <span class="line">Just Right.</span>
+          </h1>
+
+          <div class="eyebrow">AI Workshops • Coaches On Site • Working Lunch</div>
+
+          <p class="lead">Build your first AI assistant in one day and leave with a working system that saves time next week, not next quarter.</p>
+
+          <div class="cta-row">
+            <a class="btn peach" href="https://www.eventbrite.ca/e/promptos-building-your-first-ai-assistant-tickets-1693944687159?aff=oddtdtcreator" target="_blank" rel="noopener">Register on Eventbrite</a>
+            <a class="btn ghost" href="#syllabus">Download the Syllabus</a>
+          </div>
+
+          <div class="meta">
+            <div class="pill" aria-label="Event details">
+              <span>Saturday, Nov 1</span>
+              <span>10:00–4:00 (Doors 9:30)</span>
+              <span>Fort Tectoria — 777 Fort St</span>
+              <span>Lunch Included — Vegan &amp; Gluten-Free Options</span>
+              <span>32 Seats</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-art tilt" data-reveal>
+          <div class="photo">
+            <img
+              src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e7e31e1674004ee04a3e.png"
+              srcset="
+                https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e7e31e1674004ee04a3e.png 400w,
+                https://images.leadconnectorhq.com/image/f_webp/q_80/r_800/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e7e31e1674004ee04a3e.png 800w,
+                https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e7e31e1674004ee04a3e.png 1200w"
+              sizes="(max-width:980px) 100vw, 45vw"
+              alt="Confident woman founder in cream blazer working with laptop in a bright workspace" />
+          </div>
+
+          <img
+            class="badge-guarantee"
+            src="https://storage.googleapis.com/msgsndr/tsV5yBlQck5jNO5Et3cu/media/68f3fa3e1e1674038ae66a3e.png"
+            alt="Goldilocks Guarantee — PromptOS Certified: Just right or it's free" />
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section class="section" id="why">
+      <div class="wrap">
+        <div class="grid cols-2">
+          <div class="card tilt" data-reveal>
+            <h2>Smart Women Are Annoyed With AI for a Reason</h2>
+            <p class="lead">You are not behind — you are busy. The market is loud and tools keep changing. PromptOS fixes that with one clear, hands-on build that fits how you already work.</p>
+            <div class="chips"><span class="chip">No Vendor Sprawl</span><span class="chip">Plain Language</span><span class="chip">Workflow First</span></div>
+          </div>
+          <div class="grid">
+            <div class="feature card tilt" data-reveal>
+              <div class="icon"><img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba1e167428a3e025aa.png" alt="Time icon" /></div>
+              <div><strong style="color:#fff">Time Back Fast</strong><p>Quick actions for email, notes, and calendar that remove daily friction.</p></div>
+            </div>
+            <div class="feature card tilt" data-reveal>
+              <div class="icon"><img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba8e5daa28068886ab.png" alt="Voice assistant icon" /></div>
+              <div><strong style="color:#fff">Voice on Your Phone</strong><p>Capture ideas on the go. Summaries and handoffs without the busywork.</p></div>
+            </div>
+            <div class="feature card tilt" data-reveal>
+              <div class="icon"><img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba1e16745f96e025ab.png" alt="Shield guarantee icon" /></div>
+              <div><strong style="color:#fff">Goldilocks Guarantee</strong><p>Just right or your money back by lunch. If it is not valuable by 12:30 we refund on the spot.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT YOU WILL BUILD -->
+    <section class="section" id="build">
+      <div class="wrap">
+        <h2 data-reveal>Three Pieces. One Simple System.</h2>
+        <div class="grid cols-3">
+          <div class="card tilt" data-reveal>
+            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba8e5daa28068886ab.png" alt="Voice assistant mini illustration" style="width:56px;height:56px" />
+            <h3>Voice-Enabled Assistant</h3>
+            <p>On your phone and laptop. Meeting summaries and next steps to calendar or email.</p>
+            <div class="chips"><span class="chip">Capture</span><span class="chip">Summarize</span><span class="chip">Handoff</span></div>
+          </div>
+          <div class="card tilt" data-reveal>
+            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba1e16743befe025a9.png" alt="Custom GPT mini illustration" style="width:56px;height:56px" />
+            <h3>Custom GPT for Your Business</h3>
+            <p>Loaded with your offers, tone, and FAQs. Drafts emails, briefs, and checklists that sound like you.</p>
+            <div class="chips"><span class="chip">Your Voice</span><span class="chip">Your Offers</span></div>
+          </div>
+          <div class="card tilt" data-reveal>
+            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba722f75eaf740c5e1.png" alt="Quick actions mini illustration" style="width:56px;height:56px" />
+            <h3>Quick Actions That Reduce Clicks</h3>
+            <p>One-tap flows that move notes to calendar or CRM.</p>
+            <div class="chips"><span class="chip">Email</span><span class="chip">Notes</span><span class="chip">Calendar</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AGENDA -->
+    <section class="section" id="agenda">
+      <div class="wrap">
+        <h2 data-reveal>Structured to Get You to Done</h2>
+        <table class="agenda card" aria-label="Workshop agenda" data-reveal>
+          <tbody>
+            <tr><td>9:30 — 10:00</td><td>Networking and Coffee</td></tr>
+            <tr><td>10:00 — 10:30</td><td>Welcome and Setup</td></tr>
+            <tr><td>10:30 — 11:30</td><td>Profile Deep Dive and the Power of Well-Designed Memory</td></tr>
+            <tr><td>11:30 — 12:30</td><td>Little-Known Features — Image Tools, Projects, Canvas, Connectors</td></tr>
+            <tr><td>12:30 — 1:15</td><td>Working Lunch — Guided Build Prompts</td></tr>
+            <tr><td>1:15 — 3:00</td><td>Build Your Own Expert Assistant — Hands On</td></tr>
+            <tr><td>3:00 — 4:00</td><td>Show and Tell, Q&A, Next Steps</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- OUTCOMES / PRICING -->
+    <section class="section" id="outcomes">
+      <div class="wrap" style="display:grid;grid-template-columns:1.2fr .8fr;gap:24px">
+        <div class="card tilt" data-reveal>
+          <h2>Leave With Capability, Not Just Notes</h2>
+          <ul>
+            <li>A working voice assistant on phone and laptop</li>
+            <li>A custom GPT tuned to your brand</li>
+            <li>Three quick actions that cut daily friction</li>
+            <li>Lightweight playbook PDF so you keep momentum</li>
+            <li>Follow-up office hours the week after</li>
+            <li><strong>Bonus</strong>: register by Oct 20 for a 15-minute prep call</li>
+          </ul>
+          <div class="cta-row">
+            <a class="btn peach" href="https://www.eventbrite.ca/e/promptos-building-your-first-ai-assistant-tickets-1693944687159?aff=oddtdtcreator" target="_blank" rel="noopener">Reserve Your Seat</a>
+            <a class="btn ghost" href="#faq">Questions? Read the FAQ</a>
+          </div>
+        </div>
+        <div class="card panel-2 tilt" id="pricing" data-reveal>
+          <h2 style="margin-top:0">$247 CAD</h2>
+          <p>Add a teammate for +$150</p>
+          <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_600/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3f237722f7537ea443286.png" alt="Expert GPT badge" style="width:90px;height:auto;margin:8px 0" />
+          <div class="chips"><span class="chip">Cap 32 Seats</span><span class="chip">Hands On</span><span class="chip">Working Lunch</span></div>
+          <div style="margin-top:16px"><a class="btn peach" href="https://www.eventbrite.ca/e/promptos-building-your-first-ai-assistant-tickets-1693944687159?aff=oddtdtcreator" target="_blank" rel="noopener">Register on Eventbrite</a></div>
+          <p style="margin-top:16px">Goldilocks Guarantee: just right or refund by lunch.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VENUE + MAP -->
+    <section class="section" id="venue">
+      <div class="wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+        <div class="card panel-2 tilt" data-reveal>
+          <h2>Fort Tectoria — 777 Fort St</h2>
+          <p>Doors 9:30. Event 10:00 to 4:00. Lunch provided with vegan and gluten-free options. The venue is accessible.</p>
+          <div class="chips"><span class="chip">Bring Laptop and Charger</span><span class="chip">ChatGPT Plus or Teams</span></div>
+        </div>
+        <div class="card tilt" data-reveal>
+          <img
+            src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e68c8e5daa421c88826c.png"
+            srcset="
+              https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e68c8e5daa421c88826c.png 400w,
+              https://images.leadconnectorhq.com/image/f_webp/q_80/r_800/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e68c8e5daa421c88826c.png 800w,
+              https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e68c8e5daa421c88826c.png 1200w"
+            sizes="(max-width:980px) 100vw, 45vw"
+            alt="Fort Tectoria interior space" style="border-radius:12px" />
+        </div>
+      </div>
+
+      <div class="wrap" style="margin-top:18px">
+        <div class="map-card tilt" data-reveal>
+          <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Fort+Tectoria+777+Fort+St,+Victoria,+BC" target="_blank" rel="noopener" aria-label="Open Fort Tectoria in Google Maps"></a>
+          <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_1200/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba8e5daa38b88886aa.png" alt="Stylized map preview of Fort Tectoria location" />
+          <div class="map-overlay" aria-hidden="true">
+            <div class="map-chip">
+              <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_400/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3e6ba8e5daa0db68886ac.png" alt="" /> Open in Google Maps
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section class="section" id="team">
+      <div class="wrap">
+        <h2 data-reveal>People Who Keep Things Simple</h2>
+        <div class="grid cols-3">
+          <div class="card tilt" data-reveal>
+            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_800/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3eb251e16743775e0d355.jpeg" alt="Headshot of Ryan Sawatzky" style="border-radius:12px;margin-bottom:10px" />
+            <strong style="color:#fff">Ryan Sawatzky — Facilitator</strong>
+            <p>Founder of Funnel + Ladder. Translates AI into real workflows for owner-led teams.</p>
+          </div>
+          <div class="card tilt" data-reveal>
+            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_800/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3eb256a7dfa44b4eab6f6.jpeg" alt="Headshot of Meenakshi Arya" style="border-radius:12px;margin-bottom:10px" />
+            <strong style="color:#fff">Meenakshi Arya — Co-Founder</strong>
+            <p>Program architecture and learner experience. Keeps the just-right bar high.</p>
+          </div>
+          <div class="card tilt" data-reveal>
+            <img src="https://images.leadconnectorhq.com/image/f_webp/q_80/r_800/u_https://assets.cdn.filesafe.space/tsV5yBlQck5jNO5Et3cu/media/68f3eb258e5daa5151892b1b.png" alt="PromptOS crest" style="border-radius:12px;margin-bottom:10px" />
+            <strong style="color:#fff">Chris Lloyd — Coach</strong>
+            <p>Hands-on helper. Bridges setup snags so you don’t stall.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section" id="faq">
+      <div class="wrap">
+        <h2 data-reveal>Friction Killers</h2>
+        <div class="grid cols-2">
+          <div class="card tilt" data-reveal><strong style="color:#fff">How Technical Do I Need to Be?</strong><p>If you can use email and a browser you’re good.</p></div>
+          <div class="card tilt" data-reveal><strong style="color:#fff">Do I Need ChatGPT Plus or Teams?</strong><p>Yes. We send a simple pre-event checklist so you arrive ready.</p></div>
+          <div class="card tilt" data-reveal><strong style="color:#fff">Will This Replace My Team?</strong><p>No. It removes tedious steps so your team does more valuable work.</p></div>
+          <div class="card tilt" data-reveal><strong style="color:#fff">Refunds?</strong><p>Goldilocks Guarantee. If it isn’t valuable by 12:30 we refund on site.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <div class="cta-bar" role="region" aria-label="Quick registration">
+      <div class="row">
+        <div>Nov 1 • Victoria BC • 32 Seats • Lunch Included</div>
+        <div class="cta-row">
+          <button class="btn ghost" id="motionToggle" aria-pressed="true">Motion On</button>
+          <a class="btn peach" href="https://www.eventbrite.ca/e/promptos-building-your-first-ai-assistant-tickets-1693944687159?aff=oddtdtcreator" target="_blank" rel="noopener">Grab Your Seat</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div>© <span id="year"></span> PromptOS. All rights reserved.</div>
+      <div style="margin-top:8px">Questions? Email <a href="mailto:hello@funnelladder.com">hello@funnelladder.com</a></div>
+    </div>
+  </footer>
+
+  <script>
+    // Year stamp
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const heroTitle = document.querySelector('[data-hero-animate]');
+    const motionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let heroObserver;
+    let heroAnimationPlayed = false;
+
+    function stopHeroObserver(){
+      if(heroObserver){ heroObserver.disconnect(); heroObserver = null; }
+    }
+
+    function applyHeroNoMotion(permanent=false){
+      if(!heroTitle) return;
+      heroTitle.classList.add('no-motion');
+      heroTitle.classList.remove('animate');
+      if(permanent){
+        heroAnimationPlayed = true;
+        heroTitle.classList.add('played');
+      } else if(!heroAnimationPlayed){
+        heroTitle.classList.remove('played');
+      }
+      stopHeroObserver();
+    }
+
+    function triggerHeroAnimation(){
+      if(!heroTitle || heroAnimationPlayed) return;
+      if(document.body.classList.contains('motion-off') || motionMedia.matches){
+        applyHeroNoMotion(motionMedia.matches);
+        return;
+      }
+      heroTitle.classList.remove('no-motion');
+      heroTitle.classList.add('animate','played');
+      heroAnimationPlayed = true;
+      stopHeroObserver();
+    }
+
+    function startHeroObserver(){
+      if(!heroTitle || heroObserver || heroAnimationPlayed) return;
+      heroObserver = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{ if(entry.isIntersecting){ triggerHeroAnimation(); } });
+      }, {threshold:0.6});
+      heroObserver.observe(heroTitle);
+    }
+
+    if(heroTitle){
+      if(motionMedia.matches || document.body.classList.contains('motion-off')){
+        applyHeroNoMotion(motionMedia.matches);
+      } else {
+        startHeroObserver();
+      }
+      motionMedia.addEventListener('change',(event)=>{
+        if(event.matches){
+          applyHeroNoMotion(true);
+        } else if(!document.body.classList.contains('motion-off') && !heroAnimationPlayed){
+          heroTitle.classList.remove('no-motion');
+          startHeroObserver();
+        }
+      });
+    }
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries)=>{ entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, {threshold:0.12});
+    document.querySelectorAll('[data-reveal]').forEach(el=> io.observe(el));
+
+    // Parallax tilt
+    const lerp=(a,b,t)=>a+(b-a)*t;
+    document.querySelectorAll('.tilt').forEach(el=>{
+      let rx=0,ry=0,ax=0,ay=0;
+      const rect=()=>el.getBoundingClientRect();
+      window.addEventListener('mousemove',(e)=>{const r=rect();const dx=(e.clientX-(r.left+r.width/2))/r.width;const dy=(e.clientY-(r.top+r.height/2))/r.height;ax=dy*6;ay=-dx*6;});
+      (function loop(){rx=lerp(rx,ax,.1);ry=lerp(ry,ay,.1);el.style.transform=`perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;requestAnimationFrame(loop);})();
+    });
+
+    // Parallax blobs
+    const blobs=[...document.querySelectorAll('.blob')];
+    window.addEventListener('scroll',()=>{const y=window.scrollY*0.04;blobs.forEach((b,i)=>b.style.transform=`translateY(${y*(i+1)}px)`);},{passive:true});
+
+    // Motion toggle
+    const toggle=document.getElementById('motionToggle');
+    if(toggle){
+      let on=true;
+      toggle.addEventListener('click',()=>{
+        on=!on;
+        document.body.classList.toggle('motion-off', !on);
+        toggle.textContent = on? 'Motion On':'Motion Off';
+        toggle.setAttribute('aria-pressed', String(on));
+        if(!on){
+          applyHeroNoMotion(false);
+        } else {
+          if(heroTitle){
+            heroTitle.classList.remove('no-motion');
+            if(!heroAnimationPlayed){
+              startHeroObserver();
+            }
+          }
+        }
+      });
+      if(motionMedia.matches){
+        document.body.classList.add('motion-off');
+        toggle.setAttribute('aria-pressed','false');
+        toggle.textContent='Motion Off';
+        applyHeroNoMotion(true);
+      }
+    }
+
+    // Mobile menu toggling
+    const burger = document.getElementById('hamburger');
+    const closeBtn = document.getElementById('closeMenu');
+    const drawer = document.getElementById('mobileMenu');
+    const backdrop = document.getElementById('menuBackdrop');
+    const links = document.querySelectorAll('.mobile-link');
+
+    function setOpen(open){
+      drawer.classList.toggle('open', open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      backdrop.classList.toggle('show', open);
+      backdrop.hidden = !open ? true : false;
+      burger.setAttribute('aria-expanded', String(open));
+    }
+    burger.addEventListener('click', ()=> setOpen(!drawer.classList.contains('open')));
+    closeBtn.addEventListener('click', ()=> setOpen(false));
+    backdrop.addEventListener('click', ()=> setOpen(false));
+    links.forEach(l=> l.addEventListener('click', ()=> setOpen(false)));
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ setOpen(false); }});
+  </script>
+</body>
+</html>
